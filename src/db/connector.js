@@ -3,7 +3,7 @@ const mongodb = require('@fastify/mongodb')
 
 async function dbConnector (fastify, options) {
   fastify.register(mongodb, {
-    url: 'mongodb://localhost:27017/juice'
+    url: process.env.DB_URL,
   })
 }
 
