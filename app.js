@@ -1,4 +1,4 @@
-const { CLIENT_DOMAIN, CLIENT_DOMAIN_PROTOCOL, CLIENT_DOMAIN_PORT } = process.env
+const { CLIENT_ENDPOINT, CLIENT_PROTOCOL, CLIENT_PORT } = process.env
 
 const fastify = require('fastify')({
   logger: true
@@ -9,7 +9,7 @@ fastify.register(require('./src/db/connector'))
 fastify.register(require('@fastify/cookie'))
 fastify.register(require('./src/decorators/authenticate'))
 fastify.register(cors, {
-  origin: [`${CLIENT_DOMAIN_PROTOCOL}://${CLIENT_DOMAIN}:${CLIENT_DOMAIN_PORT}`],
+  origin: [`${CLIENT_PROTOCOL}://${CLIENT_ENDPOINT}:${CLIENT_PORT}`],
   credentials: true
 })
 fastify.register(require('fastify-bcrypt'), {
@@ -19,8 +19,9 @@ fastify.register(require('fastify-bcrypt'), {
 fastify.register(require('./src/routes/auth'))
 fastify.register(require('./src/routes/ingredients'))
 fastify.register(require('./src/routes/recipes'))
+fastify.register(require('./src/routes/test'))
 
-fastify.listen({ port: 8001 }, function (err, address) {
+fastify.listen({ port: process.env.SERVER_PORT, host: '0.0.0.0' }, function (err, address) {
   if (err) {
     fastify.log.error(err)
     process.exit(1)
