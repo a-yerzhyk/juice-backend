@@ -3,7 +3,7 @@ const mongodb = require('@fastify/mongodb')
 
 async function dbConnector (fastify, options) {
   fastify.register(mongodb, {
-    url: process.env.DB_URL,
+    url: `${process.env.DB_URL}/${process.env.DB_NAME}`,
   })
 }
 

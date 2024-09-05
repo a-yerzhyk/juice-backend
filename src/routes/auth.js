@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 
-const { CLIENT_DOMAIN, CLIENT_DOMAIN_PROTOCOL, CLIENT_DOMAIN_PORT } = process.env
+const { CLIENT_ENDPOINT, CLIENT_PROTOCOL, CLIENT_PORT } = process.env
 
 async function routes (fastify, options) {
   const usersCollection = fastify.mongo.db.collection('users')
@@ -83,7 +83,7 @@ async function routes (fastify, options) {
     const token = fastify.jwt.sign({ payload })
     reply.setCookie('jwt-t', token, {
       path: '/',
-      domain: CLIENT_DOMAIN,
+      domain: CLIENT_ENDPOINT,
       httpOnly: true,
       secure: false,
       sameSite: true
@@ -95,7 +95,7 @@ async function routes (fastify, options) {
   fastify.post('/logout', { onRequest: [fastify.authenticate] }, async (request, reply) => {
     reply.clearCookie('jwt-t', {
       path: '/',
-      domain: CLIENT_DOMAIN
+      domain: CLIENT_ENDPOINT
     })
     .code(200)
     .send({ msg: 'Logged out' })
@@ -125,7 +125,7 @@ async function routes (fastify, options) {
     } else {
       await usersCollection.updateOne({ _id: activation.userId }, { $set: { verified: true } })
       await activationsCollection.deleteOne({ token })
-      return reply.redirect(`${CLIENT_DOMAIN_PROTOCOL}://${CLIENT_DOMAIN}:${CLIENT_DOMAIN_PORT}/verification-success`)
+      return reply.redirect(`${CLIENT_PROTOCOL}://${CLIENT_ENDPOINT}:${CLIENT_PORT}/verification-success`)
     }
   })
 
