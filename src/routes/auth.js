@@ -1,6 +1,6 @@
 const crypto = require('crypto')
 
-const { CLIENT_ENDPOINT, CLIENT_PROTOCOL, CLIENT_PORT } = process.env
+const { domain, clientOrigin } = require('../env')()
 
 async function routes (fastify, options) {
   const usersCollection = fastify.mongo.db.collection('users')
@@ -47,7 +47,7 @@ async function routes (fastify, options) {
     })
     await sendActivationEmail(registrationResult.insertedId)
     if (registrationResult) {
-      return reply.code(201).send({ msg: 'User registered' })
+      return reply.code(201).redirect(`${clientOrigin}/registration-success`)
     } else {
       return reply.code(500).send({ msg: 'Error during user registration' })
     }
@@ -81,21 +81,22 @@ async function routes (fastify, options) {
     }
     const payload = { id: user._id, name: user.name, email: user.email, verified: user.verified }
     const token = fastify.jwt.sign({ payload })
-    reply.setCookie('jwt-t', token, {
+    const setCookieOpts = {
       path: '/',
-      domain: CLIENT_ENDPOINT,
+      domain: domain,
       httpOnly: true,
       secure: false,
       sameSite: true
-    })
+    }
+    reply.setCookie('jwt-t', token, setCookieOpts)
     .code(200)
-    .send({ msg: 'Logged in' })
+    .send({ msg: `Logged in` })
   })
 
   fastify.post('/logout', { onRequest: [fastify.authenticate] }, async (request, reply) => {
     reply.clearCookie('jwt-t', {
       path: '/',
-      domain: CLIENT_ENDPOINT
+      domain: domain,
     })
     .code(200)
     .send({ msg: 'Logged out' })
@@ -125,7 +126,7 @@ async function routes (fastify, options) {
     } else {
       await usersCollection.updateOne({ _id: activation.userId }, { $set: { verified: true } })
       await activationsCollection.deleteOne({ token })
-      return reply.redirect(`${CLIENT_PROTOCOL}://${CLIENT_ENDPOINT}:${CLIENT_PORT}/verification-success`)
+      return reply.redirect(`${clientOrigin}/verification-success`)
     }
   })
 

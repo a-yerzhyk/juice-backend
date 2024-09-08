@@ -1,8 +1,9 @@
+const { jwtSecret } = require('../env')()
 const fastifyPlugin = require('fastify-plugin')
 
 async function authDecorator(fastify, opts) {
   fastify.register(require("@fastify/jwt"), {
-    secret: process.env.JWT_SECRET,
+    secret: jwtSecret,
     cookie: {
       cookieName: 'jwt-t',
       signed: false
