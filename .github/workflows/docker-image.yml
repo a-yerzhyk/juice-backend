@@ -38,6 +38,7 @@ jobs:
         # Run Docker container on VPS
         ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST << EOF
           # Run new container
+          pwd
           cd /juice/backend
           docker compose up -d
         EOF
