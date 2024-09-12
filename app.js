@@ -9,7 +9,7 @@ fastify.register(require('./src/db/connector'))
 fastify.register(require('@fastify/cookie'))
 fastify.register(require('./src/decorators/authenticate'))
 fastify.register(cors, {
-  origin: [clientOrigin],
+  origin: ['https://libjuice.com', clientOrigin],
   credentials: true
 })
 fastify.register(require('fastify-bcrypt'), {
@@ -21,7 +21,7 @@ fastify.register(require('./src/routes/ingredients'))
 fastify.register(require('./src/routes/recipes'))
 fastify.register(require('./src/routes/test'))
 
-fastify.listen({ port: serverPort, host: '0.0.0.0' }, function (err, address) {
+fastify.listen({ port: serverPort }, function (err, address) {
   if (err) {
     fastify.log.error(err)
     process.exit(1)
