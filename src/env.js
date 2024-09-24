@@ -1,6 +1,12 @@
 function getSmth() {
   const dbOrigin = process.env.DB_ORIGIN;
   const dbName = process.env.DB_NAME;
+  const dbUser = process.env.DB_USERNAME;
+  const dbPassword = process.env.DB_PASSWORD;
+  const dbHref = dbUser && dbPassword
+    ? `${dbUser}:${dbPassword}@${dbOrigin}/${dbName}?authSource=admin`
+    : `${dbOrigin}/${dbName}`;
+
   const domain = process.env.DOMAIN;
   const protocol = process.env.PROTOCOL;
   const clientSubDomain = process.env.CLIENT_SUB_DOMAIN;
@@ -13,13 +19,11 @@ function getSmth() {
   const serverHost = serverSubDomain + domain;
 
   return {
-    dbHref: dbOrigin + '/' + dbName,
+    dbHref,
     clientOrigin: protocol + '//' + clientHost,
     serverOrigin: protocol + '//' + serverHost,
     clientHost,
     serverHost,
-    dbOrigin,
-    dbName,
     domain,
     clientSubDomain,
     serverSubDomain,

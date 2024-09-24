@@ -4,7 +4,7 @@ const mongodb = require('@fastify/mongodb')
 
 async function dbConnector (fastify, options) {
   fastify.register(mongodb, {
-    url: dbHref,
+    url: `mongodb://${dbHref}`,
   })
 }
 
