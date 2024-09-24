@@ -33,7 +33,7 @@ async function routes (fastify, options) {
     if (result) {
       return reply.code(201).send({ msg: 'Recipe created' })
     }
-    return reply.code(500).send({ msg: 'Ingredient not created' })
+    return reply.code(500).send({ msg: 'Recipe not created' })
   })
 
   // const getStructure = {
