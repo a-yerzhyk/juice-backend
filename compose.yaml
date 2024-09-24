@@ -21,14 +21,19 @@ services:
       SERVER_SUB_DOMAIN: ${SERVER_SUB_DOMAIN}
       SERVER_PORT: ${SERVER_PORT}
       JWT_SECRET: ${JWT_SECRET}
-      DB_NAME: ${DB_NAME}
-      DB_ORIGIN: mongodb://juice-database:27017
+      DB_NAME: juice
+      DB_ORIGIN: juice-database:27017
+      DB_USERNAME: ${MONGO_DB_USERNAME}
+      DB_PASSWORD: ${MONGO_DB_PASSWORD}
     ports:
       - 8000:8000
 
   juice-database:
     image: mongo:7
     restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_DB_PASSWORD}
     volumes:
      - juice_db:/data/db
     ports:
